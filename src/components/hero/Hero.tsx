@@ -1,30 +1,251 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useTransform, useReducedMotion, useInView, animate } from "framer-motion";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { ArrowRight, GraduationCap } from "lucide-react";
+import Image from "next/image";
+import { Playfair_Display } from "next/font/google";
+import { ArrowRight, GraduationCap, Globe, Award, BookOpen, Send, CheckCircle2 } from "lucide-react";
+
+// Load Playfair Display font for the heading
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  display: "swap",
+});
+
+// Reusable Count-Up Counter Component
+function Counter({ value, duration = 1.5, delay = 0 }: { value: string; duration?: number; delay?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-50px" });
+
+  useEffect(() => {
+    if (!inView) return;
+    const node = ref.current;
+    if (!node) return;
+
+    // Parse numeric part
+    const matches = value.match(/(\d+)/);
+    if (!matches) {
+      node.textContent = value;
+      return;
+    }
+
+    const targetNumber = parseInt(matches[0], 10);
+    const prefix = value.split(matches[0])[0] || "";
+    const suffix = value.split(matches[0])[1] || "";
+
+    const controls = animate(0, targetNumber, {
+      duration,
+      delay,
+      ease: "easeOut",
+      onUpdate(current) {
+        node.textContent = prefix + Math.floor(current) + suffix;
+      },
+    });
+
+    return () => controls.stop();
+  }, [value, inView, duration, delay]);
+
+  return <span ref={ref}>0</span>;
+}
+
+// Letter-by-Letter Animated Text Component (for the Main Heading)
+function AnimatedHeading({ text, shouldReduceMotion }: { text: string; shouldReduceMotion: boolean }) {
+  // Split title by newline. If no newlines are present, we split by common lines.
+  let lines = text.split("\n");
+
+  // Fallback split for default titles to ensure proper lines and coloring
+  if (lines.length === 1) {
+    const lowerText = text.toLowerCase();
+    if (lowerText.includes("credit transfer")) {
+      const parts = text.split(/(credit transfer)/i);
+      lines = [parts[0].trim(), parts[1].trim()];
+    } else if (lowerText.includes("education journey")) {
+      const parts = text.split(/(education journey)/i);
+      lines = [parts[0].trim(), parts[1].trim()];
+    }
+  }
+
+  // Variant for the container (stagger children)
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: shouldReduceMotion ? 0 : 0.03,
+        delayChildren: 0.4,
+      },
+    },
+  };
+
+  // Variant for individual letters
+  const letterVariants = {
+    hidden: {
+      opacity: 0,
+      y: shouldReduceMotion ? 0 : 60,
+      rotateX: shouldReduceMotion ? 0 : -90,
+      filter: shouldReduceMotion ? "blur(0px)" : "blur(8px)",
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      rotateX: 0,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.55,
+        ease: "easeOut" as const,
+      },
+    },
+  };
+
+  return (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className={`flex flex-col select-none my-6 ${playfairDisplay.className} text-[36px] md:text-[50px] lg:text-[64px] leading-[1.15] font-bold`}
+      style={{ perspective: 1000 }}
+    >
+      {lines.map((line, lineIndex) => {
+        const isWholeLineRed = 
+          line.toLowerCase().trim() === "credit transfer" || 
+          line.toLowerCase().trim() === "education journey";
+
+        const words = line.split(" ");
+        
+        return (
+          <div 
+            key={lineIndex} 
+            className={`block overflow-hidden py-1 leading-[1.15] ${
+              isWholeLineRed ? "text-[#A1122A] underline decoration-[#A1122A] decoration-[3px] underline-offset-[8px]" : ""
+            }`}
+          >
+            {words.map((word, wordIndex) => {
+              const isRedWord =
+                word.toLowerCase().includes("education") ||
+                word.toLowerCase().includes("credit") ||
+                word.toLowerCase().includes("transfer") ||
+                word.toLowerCase().includes("abroad");
+
+              const wordColorClass = isRedWord ? "text-[#A1122A]" : "text-[#081B3A]";
+              const wordUnderlineClass = isRedWord && !isWholeLineRed ? "underline decoration-[#A1122A] decoration-[3px] underline-offset-[8px]" : "";
+
+              return (
+                <span
+                  key={wordIndex}
+                  className={`inline-block mr-[0.25em] whitespace-nowrap ${wordColorClass} ${wordUnderlineClass}`}
+                >
+                  {word.split("").map((char, charIndex) => (
+                    <motion.span
+                      key={charIndex}
+                      variants={letterVariants}
+                      className="inline-block transform-gpu"
+                      style={{ transformOrigin: "50% 50% -40px" }}
+                    >
+                      {char === " " ? "\u00A0" : char}
+                    </motion.span>
+                  ))}
+                </span>
+              );
+            })}
+          </div>
+        );
+      })}
+    </motion.div>
+  );
+}
+
+// Letter-by-Letter Typing Animation Component (with cursor)
+function TypingText({ text, delay, shouldReduceMotion }: { text: string; delay: number; shouldReduceMotion: boolean }) {
+  const characters = text.split("");
+
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: shouldReduceMotion ? 0 : 0.04,
+        delayChildren: delay,
+      },
+    },
+  };
+
+  const letterVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 8 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut" as const,
+      },
+    },
+  };
+
+  return (
+    <div className="inline-flex items-center text-sm md:text-base font-semibold text-[#081B3A] tracking-wider uppercase bg-[#F8FAFC] border border-slate-100 rounded-full px-5 py-2.5 shadow-sm">
+      <GraduationCap size={16} className="text-[#A1122A] mr-2 shrink-0 animate-pulse" />
+      <motion.span
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className="inline"
+      >
+        {characters.map((char, index) => (
+          <motion.span
+            key={index}
+            variants={letterVariants}
+            className="inline-block"
+          >
+            {char === " " ? "\u00A0" : char}
+          </motion.span>
+        ))}
+      </motion.span>
+      {/* Blinking typing cursor */}
+      <motion.span
+        animate={{ opacity: [1, 0] }}
+        transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse", ease: "linear" as const }}
+        className="inline-block w-[2px] h-[1.1em] bg-[#A1122A] ml-1 shrink-0"
+        style={{ verticalAlign: "middle" }}
+      />
+    </div>
+  );
+}
 
 export default function Hero() {
+  const shouldReduceMotion = useReducedMotion() ?? false;
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Parallax hook
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 800], [0, 120]);
+
   const [content, setContent] = useState({
     heroBadge: "Kerala's Premier Credit Transfer Institute",
-    heroTitle: "Empowering Students Through Credit Transfer",
+    heroTitle: "Empowering students through\ncredit transfer",
     heroDescription:
       "Resume your education with the Best Academic Credit Transfer institution in Kerala. Recognizing credits and saving time and cost to achieve your academic goals.",
   });
 
+  // Preserve database fetch logic
   useEffect(() => {
     async function fetchContent() {
       try {
         const res = await fetch("/api/admin/home", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
+          // If the title from API is the old default or empty, we use our new default
+          const title = data.heroTitle || "";
+          const isOldDefault =
+            title === "Empowering Students Through Credit Transfer" ||
+            title === "Complete Your B.Tech/Degree via Credit Transfer" ||
+            title === "Transform Your\nEducation\nJourney" ||
+            !title;
+
           setContent({
-            heroBadge:
-              data.heroBadge || "Kerala's Premier Credit Transfer Institute",
-            heroTitle:
-              data.heroTitle ||
-              "Empowering Students Through Credit Transfer",
+            heroBadge: data.heroBadge || "Kerala's Premier Credit Transfer Institute",
+            heroTitle: isOldDefault ? "Empowering students through\ncredit transfer" : title,
             heroDescription:
               data.heroDescription ||
               "Resume your education with the Best Academic Credit Transfer institution in Kerala. Recognizing credits and saving time and cost to achieve your academic goals.",
@@ -37,362 +258,178 @@ export default function Hero() {
     fetchContent();
   }, []);
 
-  // Split title for highlight logic — highlight "Credit Transfer" or last two words
-  const renderTitle = (title: string) => {
-    if (title.includes("Credit Transfer")) {
-      const parts = title.split("Credit Transfer");
-      return (
-        <>
-          {parts[0]}
-          <span className="hero-gradient-text">Credit Transfer</span>
-          {parts[1]}
-        </>
-      );
-    }
-    // Fallback: highlight last word
-    const words = title.split(" ");
-    const lastWord = words.pop();
-    return (
-      <>
-        {words.join(" ")}{" "}
-        <span className="hero-gradient-text">{lastWord}</span>
-      </>
-    );
-  };
+  // Floating decoration background elements for Left side
+  const floatingElements = [
+    { Icon: GraduationCap, size: 36, top: "12%", left: "8%", delay: 0 },
+    { Icon: Globe, size: 44, top: "28%", right: "12%", delay: 1.2 },
+    { Icon: Award, size: 32, bottom: "24%", left: "6%", delay: 0.8 },
+    { Icon: BookOpen, size: 40, bottom: "12%", right: "10%", delay: 1.8 },
+    { Icon: Send, size: 28, top: "55%", left: "15%", delay: 0.5 },
+  ];
 
   return (
-    <>
-      <style>{`
-        .hero-section {
-          position: relative;
-          width: 100%;
-          height: 100vh;
-          min-height: 600px;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background-image: url('/images/hero_bg.png');
-          background-size: cover;
-          background-position: center;
-          background-repeat: no-repeat;
-        }
+    <section
+      ref={containerRef}
+      className="relative w-full !min-h-0 lg:!min-h-[calc(100vh-88px)] !h-auto lg:!h-[calc(100vh-88px)] flex flex-col-reverse lg:flex-row bg-white overflow-hidden mt-[88px]"
+      aria-label="Welcome to Edumentora"
+    >
+      {/* ================= LEFT CONTENT PANEL (45%) ================= */}
+      <div className="relative w-full lg:w-[45%] lg:h-full bg-white flex flex-col justify-center px-6 py-12 sm:px-12 lg:py-8 lg:px-10 xl:py-12 xl:px-16 z-10 overflow-hidden">
+        {/* Soft Background Gradients */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <div className="absolute top-[15%] left-[8%] w-72 h-72 rounded-full bg-[#A1122A]/[0.02] blur-[80px]" />
+          <div className="absolute bottom-[20%] right-[8%] w-80 h-80 rounded-full bg-[#081B3A]/[0.03] blur-[100px]" />
+        </div>
 
-        .hero-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            160deg,
-            rgba(0, 0, 0, 0.72) 0%,
-            rgba(10, 10, 40, 0.78) 50%,
-            rgba(0, 0, 0, 0.75) 100%
-          );
-          z-index: 1;
-        }
+        {/* Faint Floating Watermark Icons */}
+        {!shouldReduceMotion &&
+          floatingElements.map((el, idx) => (
+            <motion.div
+              key={idx}
+              style={{
+                position: "absolute",
+                top: el.top,
+                left: el.left,
+                right: el.right,
+                bottom: el.bottom,
+                zIndex: 0,
+              }}
+              className="text-[#081B3A]/[0.04] pointer-events-none select-none hidden md:block"
+              animate={{
+                y: [0, -10, 0],
+                rotate: [0, 6, -6, 0],
+              }}
+              transition={{
+                duration: 6 + idx * 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: el.delay,
+              }}
+            >
+              <el.Icon size={el.size} strokeWidth={1.2} />
+            </motion.div>
+          ))}
 
-        .hero-content-wrapper {
-          position: relative;
-          z-index: 2;
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          padding: 0 24px;
-        }
+        {/* Left Side Content Container */}
+        <div className="relative w-full flex flex-col items-center lg:items-start text-center lg:text-left z-10 max-w-2xl mx-auto lg:mx-0">
+          
+          {/* Subtitle */}
+          <motion.span
+            initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+            className="text-xs md:text-sm font-bold tracking-[0.18em] text-[#081B3A] mb-4 uppercase"
+          >
+            Your Global Education Partner
+          </motion.span>
 
-        .hero-inner {
-          max-width: 900px;
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 0;
-        }
+          {/* Heading (Bebas Neue) */}
+          <AnimatedHeading text={content.heroTitle} shouldReduceMotion={shouldReduceMotion} />
 
-        /* Glass badge */
-        .hero-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          padding: 8px 20px;
-          border-radius: 9999px;
-          background: rgba(255, 255, 255, 0.12);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.25);
-          color: #fff;
-          font-size: 0.85rem;
-          font-weight: 600;
-          letter-spacing: 0.02em;
-          margin-bottom: 28px;
-          box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-        }
+          {/* Tagline / Badge (Typed Character by Character) */}
+          <div className="min-h-[44px] flex items-center mb-6">
+            <TypingText text={content.heroBadge} delay={1.4} shouldReduceMotion={shouldReduceMotion} />
+          </div>
 
-        .hero-badge-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #E53935;
-          box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.35);
-          flex-shrink: 0;
-          animation: heroPulse 2s ease-in-out infinite;
-        }
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 2.6, ease: "easeOut" }}
+            className="text-slate-600 text-sm sm:text-base md:text-lg leading-relaxed max-w-xl mb-10"
+            style={{ fontFamily: "var(--font-inter)" }}
+          >
+            {content.heroDescription}
+          </motion.p>
 
-        @keyframes heroPulse {
-          0%, 100% { box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.35); }
-          50% { box-shadow: 0 0 0 6px rgba(229, 57, 53, 0.15); }
-        }
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 2.9, ease: "easeOut" }}
+            className="flex flex-wrap gap-4 justify-center lg:justify-start w-full mb-12 sm:mb-16"
+          >
+            <Link href="/contact" id="hero-cta-primary" className="inline-block">
+              <motion.div
+                whileHover={
+                  shouldReduceMotion
+                    ? {}
+                    : {
+                        y: -6,
+                        backgroundColor: "#A1122A",
+                        borderColor: "#A1122A",
+                        boxShadow: "0 12px 30px rgba(161, 18, 42, 0.4)",
+                      }
+                }
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="group inline-flex items-center gap-2.5 h-14 px-8 rounded-full bg-[#081B3A] border border-[#081B3A] text-white font-bold text-sm shadow-md cursor-pointer transition-colors duration-300"
+              >
+                Apply Now
+                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1.5 shrink-0" />
+              </motion.div>
+            </Link>
 
-        /* Heading */
-        .hero-heading {
-          font-size: clamp(2.125rem, 5.5vw, 4rem);
-          font-weight: 800;
-          line-height: 1.1;
-          color: #ffffff;
-          margin-bottom: 24px;
-          letter-spacing: -0.02em;
-        }
+            <Link href="/about" id="hero-cta-secondary" className="inline-block">
+              <motion.div
+                whileHover={shouldReduceMotion ? {} : { y: -4, backgroundColor: "#F8FAFC" }}
+                className="inline-flex items-center justify-center h-14 px-8 rounded-full bg-white border border-slate-200 text-[#081B3A] font-semibold text-sm hover:bg-slate-50 transition-all duration-300 cursor-pointer shadow-sm"
+              >
+                Explore Programs
+              </motion.div>
+            </Link>
+          </motion.div>
 
-        @media (min-width: 768px) {
-          .hero-heading {
-            font-size: clamp(3rem, 5vw, 4rem);
-          }
-        }
+          {/* Statistics Section moved below Hero on Home Page */}
 
-        .hero-gradient-text {
-          background: linear-gradient(135deg, #3E63C4 0%, #7FA6E0 45%, #E53935 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
+        </div>
+      </div>
 
-        /* Description */
-        .hero-description {
-          font-size: 1.15rem;
-          line-height: 1.75;
-          color: rgba(255, 255, 255, 0.85);
-          max-width: 700px;
-          margin-bottom: 40px;
-        }
-
-        @media (max-width: 640px) {
-          .hero-description {
-            font-size: 1rem;
-          }
-        }
-
-        /* Buttons */
-        .hero-buttons {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 16px;
-          justify-content: center;
-          align-items: center;
-        }
-
-        @media (max-width: 480px) {
-          .hero-buttons {
-            flex-direction: column;
-            width: 100%;
-          }
-        }
-
-        .hero-btn-primary {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          padding: 16px 36px;
-          border-radius: 9999px;
-          background: linear-gradient(135deg, #1746B5 0%, #081F5C 100%);
-          color: #fff;
-          font-size: 1rem;
-          font-weight: 700;
-          letter-spacing: 0.01em;
-          text-decoration: none;
-          box-shadow: 0 8px 32px rgba(16, 45, 140, 0.5), 0 2px 8px rgba(0,0,0,0.3);
-          transition: transform 0.25s ease, box-shadow 0.25s ease;
-          border: none;
-          cursor: pointer;
-        }
-
-        .hero-btn-primary:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 14px 40px rgba(16, 45, 140, 0.6), 0 4px 16px rgba(0,0,0,0.3);
-        }
-
-        @media (max-width: 480px) {
-          .hero-btn-primary {
-            width: 100%;
-            justify-content: center;
-          }
-        }
-
-        .hero-btn-secondary {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          padding: 14px 34px;
-          border-radius: 9999px;
-          background: transparent;
-          color: #fff;
-          font-size: 1rem;
-          font-weight: 600;
-          letter-spacing: 0.01em;
-          text-decoration: none;
-          border: 2px solid rgba(255, 255, 255, 0.65);
-          backdrop-filter: blur(4px);
-          transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
-          cursor: pointer;
-        }
-
-        .hero-btn-secondary:hover {
-          background: rgba(255, 255, 255, 1);
-          color: #071330;
-          border-color: #fff;
-          transform: translateY(-2px);
-        }
-
-        @media (max-width: 480px) {
-          .hero-btn-secondary {
-            width: 100%;
-            justify-content: center;
-          }
-        }
-
-        /* Scroll indicator */
-        .hero-scroll-indicator {
-          position: absolute;
-          bottom: 36px;
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: 3;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 6px;
-          color: rgba(255,255,255,0.65);
-          font-size: 0.7rem;
-          font-weight: 500;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-        }
-
-        .hero-scroll-mouse {
-          width: 24px;
-          height: 38px;
-          border: 2px solid rgba(255,255,255,0.5);
-          border-radius: 12px;
-          display: flex;
-          align-items: flex-start;
-          justify-content: center;
-          padding-top: 6px;
-        }
-
-        .hero-scroll-dot {
-          width: 4px;
-          height: 8px;
-          border-radius: 2px;
-          background: rgba(255,255,255,0.75);
-        }
-      `}</style>
-
-      <section className="hero-section" aria-label="Hero">
-        {/* Dark overlay */}
-        <div className="hero-overlay" aria-hidden="true" />
-
-        {/* Floating animated content container */}
+      {/* ================= RIGHT IMAGE PANEL (55%) ================= */}
+      <div className="relative w-full lg:w-[55%] h-[40vh] sm:h-[50vh] lg:h-full overflow-hidden select-none bg-[#081B3A]">
+        {/* Parallax & Ken Burns Image Wrapper */}
         <motion.div
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="hero-content-wrapper"
+          style={{ y: shouldReduceMotion ? 0 : y }}
+          initial={{ scale: 1 }}
+          animate={shouldReduceMotion ? { scale: 1 } : { scale: 1.08 }}
+          transition={{ duration: 12, ease: "easeOut" }}
+          className="absolute inset-0 w-full h-[115%] origin-center"
         >
-          <div className="hero-inner">
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="hero-badge"
-              role="status"
-              aria-label="Badge"
-            >
-              <GraduationCap size={15} aria-hidden="true" />
-              <span className="hero-badge-dot" aria-hidden="true" />
-              {content.heroBadge}
-            </motion.div>
+          <Image
+            src="/images/university-campus.jpg"
+            alt="Edumentora University Campus Building"
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 55vw"
+            className="object-cover"
+          />
+        </motion.div>
 
-            {/* Heading — Line 1 */}
-            <div aria-label="Hero heading">
-              <motion.h1
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="hero-heading"
-              >
-                {renderTitle(content.heroTitle)}
-              </motion.h1>
+        {/* Overlays */}
+        {/* Primary Dark Navy tint overlay */}
+        <div className="absolute inset-0 bg-[#081B3A]/45 mix-blend-multiply pointer-events-none" />
+        {/* Gradient shadow overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#081B3A]/75 via-[#081B3A]/30 to-transparent pointer-events-none" />
+
+        {/* Floating Glassmorphic Accent Badge */}
+        <motion.div
+          initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 2.2, duration: 0.8, ease: "easeOut" }}
+          className="absolute bottom-6 left-6 right-6 sm:bottom-10 sm:left-10 sm:right-auto sm:max-w-xs glass-dark p-5 rounded-2xl text-white shadow-2xl backdrop-blur-md z-25"
+        >
+          <div className="flex items-start gap-3.5">
+            <div className="p-2.5 bg-[#A1122A] rounded-xl text-white shrink-0 shadow-lg">
+              <CheckCircle2 size={20} className="animate-pulse" />
             </div>
-
-            {/* Description */}
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }}
-              className="hero-description"
-            >
-              {content.heroDescription}
-            </motion.p>
-
-            {/* Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.8, ease: "easeOut" }}
-              className="hero-buttons"
-            >
-              <Link
-                href="/contact"
-                id="hero-cta-primary"
-                className="hero-btn-primary"
-                aria-label="Get Started Now"
-              >
-                Get Started Now
-                <ArrowRight size={18} aria-hidden="true" />
-              </Link>
-
-              <Link
-                href="/about"
-                id="hero-cta-secondary"
-                className="hero-btn-secondary"
-                aria-label="Learn More"
-              >
-                Learn More
-              </Link>
-            </motion.div>
+            <div>
+              <h3 className="font-bold text-sm tracking-wide uppercase text-white">UGC Approved Pathways</h3>
+              <p className="text-xs text-slate-200 mt-1 leading-normal">
+                Direct academic pathways for completing your degree with accredited programs.
+              </p>
+            </div>
           </div>
         </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          className="hero-scroll-indicator"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.4, duration: 0.6 }}
-          aria-hidden="true"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <div className="hero-scroll-mouse">
-              <div className="hero-scroll-dot" />
-            </div>
-          </motion.div>
-          <span>Scroll</span>
-        </motion.div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

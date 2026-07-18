@@ -5,12 +5,10 @@ import Image from "next/image";
 import {
   motion,
   AnimatePresence,
-  animate,
   useMotionValue,
   useSpring,
 } from "framer-motion";
 import {
-  ChevronLeft,
   ChevronRight,
   Eye,
   Share2,
@@ -40,49 +38,6 @@ type MosaicItem = {
   alt: string;
   span: "big" | "tall" | "normal";
 };
-
-const heroSlides: HeroSlide[] = [
-  {
-    id: "h1",
-    title: "Celebrating Every Milestone",
-    category: "Awards",
-    image:
-      "https://images.pexels.com/photos/35487178/pexels-photo-35487178.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
-    alt: "Group of university graduates celebrating with diplomas outdoors.",
-  },
-  {
-    id: "h2",
-    title: "Wins Worth Sharing",
-    category: "Office",
-    image:
-      "https://images.pexels.com/photos/3760789/pexels-photo-3760789.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
-    alt: "Happy student giving thumbs up with laptop.",
-  },
-  {
-    id: "h3",
-    title: "Life on Campus",
-    category: "Events",
-    image:
-      "https://images.pexels.com/photos/8199174/pexels-photo-8199174.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-    alt: "Smiling student holding notebooks in university hallway.",
-  },
-  {
-    id: "h4",
-    title: "Research, Together",
-    category: "Office",
-    image:
-      "https://images.pexels.com/photos/8199613/pexels-photo-8199613.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-    alt: "Students researching books in a library.",
-  },
-  {
-    id: "h5",
-    title: "Every Document, Handled with Care",
-    category: "Products",
-    image:
-      "https://images.pexels.com/photos/7777689/pexels-photo-7777689.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=900",
-    alt: "Student reviewing academic documents for undergraduate credit transfer.",
-  },
-];
 
 const mosaicItems: MosaicItem[] = [
   {
@@ -224,134 +179,7 @@ function spanClasses(span: MosaicItem["span"]) {
   }
 }
 
-function HeroCarousel() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const slideImgRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const [activeSlide, setActiveSlide] = useState(0);
 
-  const scrollToSlide = useCallback((index: number) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const clamped = Math.max(0, Math.min(index, heroSlides.length - 1));
-    const target = clamped * track.clientWidth;
-    animate(track.scrollLeft, target, {
-      duration: 0.7,
-      ease: EASE,
-      onUpdate: (value) => {
-        track.scrollLeft = value;
-      },
-    });
-  }, []);
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    let raf = 0;
-
-    const handleScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const { scrollLeft, clientWidth } = track;
-        slideImgRefs.current.forEach((img, i) => {
-          if (!img) return;
-          const offset = (scrollLeft - i * clientWidth) / clientWidth;
-          const shift = Math.max(-1, Math.min(1, offset)) * 36;
-          img.style.transform = `translateX(${-shift}px) scale(1.15)`;
-        });
-        const index = Math.round(scrollLeft / clientWidth);
-        setActiveSlide((prev) => (prev === index ? prev : index));
-      });
-    };
-
-    track.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => {
-      track.removeEventListener("scroll", handleScroll);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  return (
-    <div className="relative py-10 md:py-14">
-      <div className="relative -mx-[calc(50vw-50%)] w-screen overflow-hidden">
-        <div
-          ref={trackRef}
-          className="flex h-[380px] snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] sm:h-[440px] md:h-[520px] lg:h-[580px] [&::-webkit-scrollbar]:hidden"
-        >
-          {heroSlides.map((slide, i) => (
-            <div key={slide.id} className="relative h-full w-full flex-shrink-0 snap-center">
-              <div
-                ref={(el) => {
-                  slideImgRefs.current[i] = el;
-                }}
-                className="absolute inset-0 will-change-transform"
-                style={{ transform: "scale(1.15)" }}
-              >
-                <Image
-                  src={slide.image}
-                  alt={slide.alt}
-                  fill
-                  priority={i === 0}
-                  sizes="100vw"
-                  className="object-cover"
-                />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-secondary/75 via-secondary/15 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10 md:p-14">
-                <div className="mx-auto max-w-7xl">
-                  <span className="mb-3 inline-flex rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-primary backdrop-blur-sm">
-                    {slide.category}
-                  </span>
-                  <h3
-                    className="max-w-lg text-2xl font-bold sm:text-3xl md:text-4xl"
-                    style={{ fontFamily: "var(--font-poppins)", color: "#fff" }}
-                  >
-                    {slide.title}
-                  </h3>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Glassy nav pills */}
-        <button
-          type="button"
-          onClick={() => scrollToSlide(activeSlide - 1)}
-          disabled={activeSlide === 0}
-          aria-label="Previous slide"
-          className="absolute left-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-white/25 text-white backdrop-blur-md transition-all duration-300 hover:bg-white/40 disabled:pointer-events-none disabled:opacity-30 sm:left-6"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-        <button
-          type="button"
-          onClick={() => scrollToSlide(activeSlide + 1)}
-          disabled={activeSlide === heroSlides.length - 1}
-          aria-label="Next slide"
-          className="absolute right-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-white/25 text-white backdrop-blur-md transition-all duration-300 hover:bg-white/40 disabled:pointer-events-none disabled:opacity-30 sm:right-6"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
-
-        {/* Pagination dots */}
-        <div className="absolute inset-x-0 bottom-4 z-10 flex items-center justify-center gap-2 sm:bottom-6">
-          {heroSlides.map((slide, i) => (
-            <button
-              key={slide.id}
-              type="button"
-              aria-label={`Go to slide ${i + 1}`}
-              onClick={() => scrollToSlide(i)}
-              className={`h-1.5 rounded-full border border-white/50 backdrop-blur-sm transition-all duration-300 ${
-                activeSlide === i ? "w-7 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function MosaicTile({ item, filteredIndex }: { item: MosaicItem; filteredIndex: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -532,7 +360,6 @@ export default function GalleryShowcase() {
         </div>
       </div>
 
-      <HeroCarousel />
 
       {/* Mosaic grid */}
       <div className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8 md:pb-28">

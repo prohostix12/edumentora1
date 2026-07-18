@@ -117,7 +117,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section className="py-24 lg:py-32 bg-white relative overflow-hidden">
+    <section className="py-12 md:py-20 lg:py-24 bg-white relative overflow-hidden">
       {/* Decorative gradient background blur */}
       <div className="absolute top-[10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
       <div className="absolute bottom-[20%] left-[-10%] w-[400px] h-[400px] rounded-full bg-accent/5 blur-3xl pointer-events-none" />

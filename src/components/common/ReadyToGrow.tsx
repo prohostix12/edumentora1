@@ -36,35 +36,36 @@ const painPoints: PainPoint[] = [
 
 export default function ReadyToGrow() {
   return (
-    <section className="relative overflow-hidden bg-white">
-      <div className="grid lg:grid-cols-[38%_62%]">
-        {/* Left — light panel, matching white canvas theme */}
-        <div className="relative flex items-center overflow-hidden bg-white px-8 py-20 sm:px-12 lg:rounded-r-[4rem] lg:px-20 lg:py-28 xl:px-24">
-          {/* Subtle dot grid — navy on white */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 opacity-[0.04]"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle, #0B1440 1px, transparent 1px)",
-              backgroundSize: "22px 22px",
-            }}
-          />
-          {/* Red glow — top right */}
-          <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-accent/10 blur-3xl animate-float" />
-          {/* Navy glow — bottom left */}
-          <div className="pointer-events-none absolute -bottom-32 -left-32 h-80 w-80 rounded-full bg-primary/8 blur-3xl animate-float-delay" />
-          {/* Tiny accent orb */}
-          <div className="pointer-events-none absolute bottom-20 right-10 h-6 w-6 rounded-full bg-accent/20 animate-float-delay-2" />
+    <section className="relative overflow-hidden bg-white py-12 md:py-20 lg:py-24">
+      {/* Background decorations absolute on the section container */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, #0B1440 1px, transparent 1px)",
+          backgroundSize: "22px 22px",
+        }}
+      />
+      {/* Red glow — top right */}
+      <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-accent/10 blur-3xl animate-float" />
+      {/* Navy glow — bottom left */}
+      <div className="pointer-events-none absolute -bottom-32 -left-32 h-80 w-80 rounded-full bg-primary/8 blur-3xl animate-float-delay" />
+      {/* Tiny accent orb */}
+      <div className="pointer-events-none absolute bottom-20 right-10 h-6 w-6 rounded-full bg-accent/20 animate-float-delay-2" />
 
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-8 lg:gap-12 items-center">
+          
+          {/* Left Column — Text Content */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            className="relative"
+            className="relative flex flex-col justify-center max-w-lg lg:max-w-none"
           >
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/10 bg-primary/5 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-soft backdrop-blur-md">
+            <span className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-primary/10 bg-primary/5 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-soft backdrop-blur-md">
               <GraduationCap className="h-3.5 w-3.5 text-primary" />
               <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" />
               We Get It
@@ -80,28 +81,29 @@ export default function ReadyToGrow() {
               <span className="block text-paragraph">Your Pain</span>
               <span className="block text-accent">Points</span>
             </h2>
-            <p className="mt-6 max-w-xs text-base leading-relaxed text-paragraph">
+            <p className="mt-6 max-w-md text-base leading-relaxed text-paragraph">
               Every student deserves a fresh start without losing what they
               have already achieved. We solve the real problems students face.
             </p>
           </motion.div>
-        </div>
 
-        {/* Right — pain point cards */}
-        <div className="flex items-center bg-white px-8 py-20 sm:px-12 lg:px-16 lg:py-28">
-          <div className="mx-auto flex w-full max-w-2xl flex-col items-center gap-10 lg:max-w-none">
-            <div className="w-64 sm:w-64 xl:w-72">
-              <PainPointCard point={painPoints[0]} index={0} />
-            </div>
-            <div className="flex w-full flex-col items-center gap-10 sm:flex-row sm:justify-center sm:gap-8 xl:gap-12">
+          {/* Right Column — Pain Point Cards */}
+          <div className="flex flex-col items-center justify-center w-full">
+            <div className="flex w-full flex-col items-center gap-10 sm:max-w-2xl lg:max-w-none">
               <div className="w-64 sm:w-64 xl:w-72">
-                <PainPointCard point={painPoints[1]} index={1} />
+                <PainPointCard point={painPoints[0]} index={0} />
               </div>
-              <div className="w-64 sm:w-64 xl:w-72">
-                <PainPointCard point={painPoints[2]} index={2} />
+              <div className="flex w-full flex-col items-center gap-10 sm:flex-row sm:justify-center sm:gap-8 xl:gap-12">
+                <div className="w-64 sm:w-64 xl:w-72">
+                  <PainPointCard point={painPoints[1]} index={1} />
+                </div>
+                <div className="w-64 sm:w-64 xl:w-72">
+                  <PainPointCard point={painPoints[2]} index={2} />
+                </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>

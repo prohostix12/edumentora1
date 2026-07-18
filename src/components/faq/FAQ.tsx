@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import SectionTitle from "@/components/common/SectionTitle";
-import { ChevronDown, HelpCircle } from "lucide-react";
+import { Plus, X, Phone } from "lucide-react";
 
 const defaultFaqs = [
   {
@@ -48,7 +47,7 @@ const defaultFaqs = [
   },
 ];
 
-function AccordionItem({
+function AccordionRow({
   question,
   answer,
   isOpen,
@@ -67,41 +66,33 @@ function AccordionItem({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.05, duration: 0.5 }}
-      className={`relative rounded-2xl border overflow-hidden transition-all duration-500 ${
+      className={`rounded-2xl transition-all duration-300 ${
         isOpen
-          ? "border-primary/20 bg-gradient-to-b from-white to-bg-section/60 shadow-card -translate-y-0.5"
-          : "border-border/80 bg-white/70 shadow-soft hover:border-primary/20 hover:shadow-card hover:-translate-y-0.5"
+          ? "bg-white shadow-card"
+          : "bg-bg-section/70 hover:bg-bg-section"
       }`}
     >
-      {/* Left accent bar */}
-      <div
-        className={`absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-accent to-accent-dark transition-opacity duration-500 ${
-          isOpen ? "opacity-100" : "opacity-0"
-        }`}
-      />
       <button
         onClick={onClick}
-        className="flex w-full items-center justify-between gap-4 p-6 text-left"
+        className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
       >
         <span
-          className={`text-sm sm:text-base font-extrabold transition-colors ${
+          className={`text-sm sm:text-base font-bold transition-colors ${
             isOpen ? "text-primary" : "text-heading"
           }`}
           style={{ fontFamily: "var(--font-poppins)" }}
         >
           {question}
         </span>
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all duration-350 ${
+        <span
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
             isOpen
-              ? "bg-gradient-to-br from-accent to-accent-dark text-white shadow-md shadow-accent/25"
-              : "bg-slate-50 text-paragraph/70 border border-border/80"
+              ? "bg-heading text-white"
+              : "bg-white text-heading/60 border border-border"
           }`}
         >
-          <ChevronDown className="h-4 w-4" />
-        </motion.div>
+          {isOpen ? <X className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+        </span>
       </button>
       <AnimatePresence>
         {isOpen && (
@@ -112,10 +103,9 @@ function AccordionItem({
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="px-6 pb-6">
-              <div className="h-px bg-border/80 mb-4" />
-              <p className="text-paragraph leading-relaxed text-sm font-medium">{answer}</p>
-            </div>
+            <p className="px-6 pb-6 text-paragraph leading-relaxed text-sm">
+              {answer}
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -151,60 +141,78 @@ export default function FAQ() {
 
   return (
     <section className="py-24 lg:py-32 bg-white relative overflow-hidden">
-      <div className="absolute top-[20%] left-[-10%] w-[450px] h-[450px] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+      <div className="absolute top-[10%] right-[-10%] w-[450px] h-[450px] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
 
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center mb-16">
-          <SectionTitle
-            label="FAQ"
-            title="Frequently Asked Questions"
-            description="Find answers to common questions about our credit transfer process, university partnerships, and student services."
-          />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+          {/* Left column: heading + book a call card */}
+          <div className="lg:col-span-4">
+            <div className="lg:sticky lg:top-28 flex flex-col gap-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6 }}
+                className="flex flex-col gap-4"
+              >
+                <span className="inline-flex items-center gap-2 text-sm font-semibold text-accent w-fit">
+                  <span className="h-2 w-2 rounded-full bg-accent" />
+                  FAQs
+                </span>
+                <h2
+                  className="text-3xl sm:text-4xl font-bold leading-tight text-heading"
+                  style={{ fontFamily: "var(--font-poppins)" }}
+                >
+                  Frequently Asked Questions
+                </h2>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="rounded-[2rem] border border-border/80 bg-bg-section/60 p-6 shadow-soft"
+              >
+                <div className="flex h-14 w-14 items-center justify-center rounded-full gradient-bg text-white shadow-md shadow-primary/20 mb-5">
+                  <Phone className="h-6 w-6" />
+                </div>
+                <h3
+                  className="text-lg font-bold text-heading mb-2"
+                  style={{ fontFamily: "var(--font-poppins)" }}
+                >
+                  Book a 15 min call
+                </h3>
+                <p className="text-sm text-paragraph leading-relaxed mb-6">
+                  If you have any questions, just book a free 15-minute call
+                  with our team before you get started.
+                </p>
+                <a
+                  href="tel:+919744587777"
+                  className="inline-flex w-full items-center justify-center gap-1.5 h-12 px-6 rounded-full text-sm font-bold text-white gradient-bg-accent hover:shadow-hover shadow-md transition-all duration-300"
+                >
+                  Book a Free Call
+                </a>
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Right column: accordion list */}
+          <div className="lg:col-span-8 flex flex-col gap-3">
+            {faqList.map((faq, index) => (
+              <AccordionRow
+                key={faq._id || index}
+                question={faq.question}
+                answer={faq.answer}
+                isOpen={openIndex === index}
+                onClick={() =>
+                  setOpenIndex(openIndex === index ? null : index)
+                }
+                index={index}
+              />
+            ))}
+          </div>
         </div>
-
-        <div className="flex flex-col gap-4">
-          {faqList.map((faq, index) => (
-            <AccordionItem
-              key={faq._id || index}
-              question={faq.question}
-              answer={faq.answer}
-              isOpen={openIndex === index}
-              onClick={() =>
-                setOpenIndex(openIndex === index ? null : index)
-              }
-              index={index}
-            />
-          ))}
-        </div>
-
-        {/* Still have questions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="glass-dark relative mt-12 rounded-[2.5rem] p-8 lg:p-10 text-center text-white shadow-hover overflow-hidden"
-        >
-          <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-32 -left-32 h-80 w-80 rounded-full bg-accent/5 blur-3xl pointer-events-none" />
-
-          <HelpCircle className="h-9 w-9 mx-auto mb-4 text-primary relative z-10" />
-          <h3
-            className="text-xl font-extrabold mb-2 text-white relative z-10"
-            style={{ fontFamily: "var(--font-poppins)" }}
-          >
-            Still have questions?
-          </h3>
-          <p className="text-slate-400 mb-6 text-sm font-medium relative z-10">
-            Our team is here to help you with any queries about credit transfer and admissions.
-          </p>
-          <a
-            href="/contact"
-            className="inline-flex items-center justify-center gap-1.5 h-11 px-6 rounded-full text-xs font-bold text-heading bg-white hover:bg-slate-50 shadow-md transition-all duration-300 relative z-10"
-          >
-            Contact Us
-          </a>
-        </motion.div>
       </div>
     </section>
   );

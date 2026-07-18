@@ -1,147 +1,243 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Image from "next/image";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, UserCheck, Route, HeartHandshake, Zap, ShieldCheck, PiggyBank, GraduationCap, Award, BookOpen } from "lucide-react";
 
 const programs = [
   {
     title: "Credit Transfer Program",
-    description:
-      "Transfer your past credits to complete your degree faster with Edumentora.",
+    description: "Transfer your past credits to complete your degree faster with Edumentora.",
     href: "/credit-transfer",
-    image:
-      "https://images.pexels.com/photos/7777689/pexels-photo-7777689.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=900",
-    imageAlt: "Student reviewing academic documents for credit transfer",
-    accent: "from-primary/10 to-primary/0",
-    ring: "ring-primary/10",
-    button: "from-primary to-primary-dark shadow-primary/20",
+    icon: GraduationCap,
+    glow: "rgba(16,45,140,0.15)",
   },
   {
     title: "Apprenticeship Program",
-    description:
-      "Study while gaining real work experience through industry training.",
+    description: "Study while gaining real work experience through industry training.",
     href: "/apprenticeship-program",
-    image:
-      "https://images.pexels.com/photos/18999469/pexels-photo-18999469.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=900",
-    imageAlt: "Professionals collaborating during apprenticeship training",
-    accent: "from-accent/15 to-accent/0",
-    ring: "ring-accent/10",
-    button: "from-primary to-primary-dark shadow-primary/20",
+    icon: Award,
+    glow: "rgba(229,57,53,0.15)",
   },
   {
     title: "Work Integrated Learning Program",
-    description:
-      "Learn theory and apply it practically for a career-ready education.",
+    description: "Learn theory and apply it practically for a career-ready education.",
     href: "/work-integrated-learning-program",
-    image:
-      "https://images.pexels.com/photos/7964503/pexels-photo-7964503.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=900",
-    imageAlt: "Professional using laptop while learning through WILP",
-    accent: "from-primary/10 to-primary/0",
-    ring: "ring-primary/10",
-    button: "from-primary to-primary-dark shadow-primary/20",
+    icon: BookOpen,
+    glow: "rgba(16,45,140,0.15)",
+  },
+];
+
+const reasons = [
+  {
+    icon: UserCheck,
+    title: "Expert Guidance",
+    description: "Our dedicated team offers tailored guidance, ensuring a seamless and successful academic credit transfer experience for each student.",
+    color: "text-primary bg-primary/5 border-primary/10",
+  },
+  {
+    icon: Route,
+    title: "Flexible Learning Paths",
+    description: "We offer tailored programs that allow you to balance education with personal and professional commitments effectively.",
+    color: "text-accent bg-accent/5 border-accent/10",
+  },
+  {
+    icon: HeartHandshake,
+    title: "Personalized Support",
+    description: "Our experienced team offers personalized support, guaranteeing a seamless and hassle-free academic credit transfer experience.",
+    color: "text-indigo-600 bg-indigo-50 border-indigo-100",
+  },
+  {
+    icon: Zap,
+    title: "Effortless Credit Transfer",
+    description: "Seamlessly transfer your earned credits to resume your education without losing progress or starting from scratch.",
+    color: "text-sky-600 bg-sky-50 border-sky-100",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Trusted University Partners",
+    description: "Collaborations with Glocal University, Radha Govind University, and Arni University ensure globally recognized credentials.",
+    color: "text-emerald-600 bg-emerald-50 border-emerald-100",
+  },
+  {
+    icon: PiggyBank,
+    title: "Save Time & Money",
+    description: "Resume your education from where you paused, saving valuable time and reducing overall financial burden significantly.",
+    color: "text-amber-600 bg-amber-50 border-amber-100",
   },
 ];
 
 export default function CreditPrograms() {
+  const [hoveredReason, setHoveredReason] = useState<number | null>(null);
+
   return (
-    <section className="py-24 lg:py-32 bg-white overflow-hidden relative">
-      {/* Decorative gradient blur */}
-      <div className="absolute top-[20%] right-[-5%] w-[400px] h-[400px] rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] rounded-full bg-accent/10 blur-3xl pointer-events-none" />
+    <section className="relative w-full min-h-screen flex flex-col justify-center bg-section-white overflow-hidden py-24 px-[6vw] snap-section">
+      
+      {/* Background decorations */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: "radial-gradient(circle, #0B1440 1px, transparent 1px)",
+            backgroundSize: "30px 30px",
+          }}
+        />
+        <div className="absolute -top-32 -left-32 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-accent/5 blur-3xl" />
+      </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          
-          {/* Left - Sticky Title */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7 }}
-            className="lg:col-span-4 lg:sticky lg:top-32"
+      <div className="relative max-w-[1440px] w-full mx-auto z-10 flex flex-col gap-10">
+        
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto flex flex-col items-center">
+          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/10 bg-primary/5 px-4.5 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-soft">
+            <Sparkles className="h-3.5 w-3.5 text-accent" />
+            Our Programs & Specialties
+          </span>
+          <h2
+            className="text-3xl sm:text-4xl font-extrabold text-heading mt-3 leading-tight"
+            style={{ fontFamily: "var(--font-poppins)" }}
           >
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/10 bg-primary/5 px-4.5 py-1.5 text-xs font-bold text-primary shadow-soft w-fit uppercase tracking-wider mb-4">
-              Our Programs
-            </span>
-            <h2
-              className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold leading-tight text-heading mb-6"
-              style={{ fontFamily: "var(--font-poppins)" }}
-            >
-              Our Credit Transfer Programs
-            </h2>
-            <p className="text-paragraph text-sm sm:text-base leading-relaxed max-w-md font-medium">
-              In EduMentora Our Vision is to create a bright future where every
-              student can complete their education without barriers through
-              recognized credit transfer programs.
-            </p>
-          </motion.div>
+            Specialized Credit Programs & Why Choose Us
+          </h2>
+        </div>
 
-          {/* Right - Image Cards */}
-          <div className="lg:col-span-8 grid sm:grid-cols-2 gap-x-8 gap-y-12 lg:gap-y-14 pt-4">
-            {programs.map((program, index) => (
-              <motion.div
-                key={program.title}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: index * 0.12, duration: 0.65, ease: "easeOut" }}
-                className={`group relative ${index === 1 ? "sm:translate-y-8" : ""} ${
-                  index === 2 ? "sm:translate-y-2" : ""
-                }`}
-              >
-                <div className="relative pt-20">
-                  
-                  {/* Floating Circular Image */}
+        {/* Main Grid: Connected Timeline (Left) & Why Choose Us Grid (Right) */}
+        <div className="grid lg:grid-cols-12 gap-10 items-stretch">
+          
+          {/* Left Column: Programs Timeline Flow (6 cols) */}
+          <div className="lg:col-span-6 flex flex-col justify-center relative">
+            <h3 className="text-xl font-extrabold text-heading mb-6" style={{ fontFamily: "var(--font-poppins)" }}>
+              Featured Programs
+            </h3>
+
+            {/* Glowing vertical connector line */}
+            <div className="absolute left-8 top-16 bottom-8 w-0.5 bg-slate-100 z-0">
+              <div className="w-full h-1/2 bg-gradient-to-b from-primary via-accent to-primary animate-shimmer" />
+            </div>
+
+            <div className="flex flex-col gap-6 relative z-10">
+              {programs.map((program, index) => {
+                const ProgramIcon = program.icon;
+                return (
                   <motion.div
-                    whileHover={{ y: -4, scale: 1.02 }}
-                    transition={{ duration: 0.3 }}
-                    className={`absolute left-1/2 top-0 z-20 h-32 w-32 -translate-x-1/2 overflow-hidden rounded-full shadow-hover ring-8 ring-white ${program.ring}`}
+                    key={program.title}
+                    initial={{ opacity: 0, x: -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.15, duration: 0.5 }}
+                    whileHover={{ x: 6 }}
+                    className="flex gap-4 items-start p-4 rounded-2xl border border-slate-100 bg-white/80 shadow-sm hover:shadow-md hover:border-primary/10 transition-all duration-300"
                   >
-                    <Image
-                      src={program.image}
-                      alt={program.imageAlt}
-                      fill
-                      sizes="128px"
-                      className="object-cover transition-transform duration-750 group-hover:scale-105"
-                    />
-                  </motion.div>
-
-                  {/* Card Panel */}
-                  <div className="glass relative overflow-hidden rounded-[2.5rem] px-7 pb-7 pt-20 shadow-soft transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-hover hover:border-primary/20">
+                    {/* Glowing Icon */}
                     <div
-                      className={`absolute inset-x-0 top-0 h-28 bg-gradient-to-b ${program.accent}`}
-                    />
-                    <div className="absolute -bottom-14 -right-14 h-32 w-32 rounded-full bg-primary/5 blur-xl group-hover:bg-primary/10 transition-colors duration-500 pointer-events-none" />
+                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm border border-slate-200 text-primary transition-all duration-300"
+                      style={{
+                        boxShadow: hoveredReason === null ? `0 0 16px ${program.glow}` : undefined,
+                      }}
+                    >
+                      <ProgramIcon className="h-5 w-5 text-accent" />
+                    </div>
 
-                    <div className="relative text-center sm:text-left z-10">
-                      <h3
-                        className="text-lg font-extrabold text-heading mb-3 group-hover:text-primary transition-colors duration-300"
-                        style={{ fontFamily: "var(--font-poppins)" }}
-                      >
+                    <div className="flex-1">
+                      <h4 className="text-base font-extrabold text-heading mb-1" style={{ fontFamily: "var(--font-poppins)" }}>
                         {program.title}
-                      </h3>
-                      <p className="text-paragraph text-sm leading-relaxed mb-6 font-medium max-w-md mx-auto sm:mx-0">
+                      </h4>
+                      <p className="text-xs text-paragraph mb-3 leading-relaxed font-medium">
                         {program.description}
                       </p>
-
                       <Link
                         href={program.href}
-                        className={`inline-flex items-center justify-center gap-1.5 h-11 px-6 rounded-full text-xs font-bold text-white bg-gradient-to-r ${program.button} shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5`}
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-accent transition-colors"
                       >
                         Know more
-                        <ArrowRight className="h-4 w-4" />
+                        <ArrowRight className="h-3.5 w-3.5" />
                       </Link>
                     </div>
-                  </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
 
-                </div>
-              </motion.div>
-            ))}
+          {/* Right Column: Why Choose Us Interactive Grid (6 cols) */}
+          <div className="lg:col-span-6 flex flex-col justify-center">
+            <h3 className="text-xl font-extrabold text-heading mb-6" style={{ fontFamily: "var(--font-poppins)" }}>
+              Why We Are The Right Choice
+            </h3>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {reasons.map((reason, idx) => {
+                const ReasonIcon = reason.icon;
+                return (
+                  <div
+                    key={reason.title}
+                    onMouseEnter={() => setHoveredReason(idx)}
+                    onMouseLeave={() => setHoveredReason(null)}
+                    className={`relative flex flex-col items-center justify-center p-5 rounded-2xl border text-center cursor-default transition-all duration-300 select-none ${
+                      hoveredReason === idx 
+                        ? "bg-primary border-primary text-white shadow-md -translate-y-1" 
+                        : "bg-slate-50/50 border-slate-100 text-paragraph hover:border-primary/20"
+                    }`}
+                  >
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl border mb-3 transition-colors ${
+                      hoveredReason === idx 
+                        ? "bg-white/20 border-white/25 text-white" 
+                        : reason.color
+                    }`}>
+                      <ReasonIcon size={18} />
+                    </div>
+                    <span className={`text-xs font-bold ${hoveredReason === idx ? "text-white" : "text-heading"}`} style={{ fontFamily: "var(--font-poppins)" }}>
+                      {reason.title}
+                    </span>
+
+                    {/* Numeric indicator */}
+                    <span className={`absolute top-2 right-3 text-[10px] font-black opacity-20 ${hoveredReason === idx ? "text-white" : "text-slate-400"}`}>
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Interactive description drawer to save vertical space while preserving descriptions */}
+            <div className="mt-6 p-5 rounded-2xl bg-slate-50 border border-slate-100 min-h-[100px] flex items-center justify-center">
+              <AnimatePresence mode="wait">
+                {hoveredReason !== null ? (
+                  <motion.div
+                    key={`desc-${hoveredReason}`}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-center"
+                  >
+                    <h4 className="text-sm font-extrabold text-primary mb-1.5" style={{ fontFamily: "var(--font-poppins)" }}>
+                      {reasons[hoveredReason].title}
+                    </h4>
+                    <p className="text-xs text-paragraph leading-relaxed font-semibold max-w-md mx-auto">
+                      {reasons[hoveredReason].description}
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="desc-default"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="text-center text-xs text-slate-450 font-bold uppercase tracking-wider flex items-center gap-1.5"
+                  >
+                    <Sparkles size={14} className="text-accent" />
+                    Hover over any reason above to read more
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
         </div>
+
       </div>
     </section>
   );

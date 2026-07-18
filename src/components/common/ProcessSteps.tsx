@@ -46,7 +46,7 @@ function RippleButton() {
     <Link
       href="/credit-transfer"
       onClick={handleClick}
-      className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-gradient-to-r from-ruby to-ruby-light px-8 py-4 text-sm font-bold text-white shadow-[0_10px_40px_-8px_rgba(229,57,53,0.6)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_50px_-8px_rgba(229,57,53,0.75)]"
+      className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-gradient-to-r from-ruby to-ruby-light px-8 py-4 text-sm font-bold text-white shadow-[0_10px_40px_-8px_rgba(229,57,53,0.5)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_50px_-8px_rgba(229,57,53,0.75)] cursor-pointer"
     >
       {ripples.map((r) => (
         <span
@@ -82,7 +82,7 @@ function TimelineCurve({ progress }: { progress: import("framer-motion").MotionV
       </defs>
 
       {/* base track */}
-      <path d={CURVE_PATH} stroke="rgba(0,0,0,0.08)" strokeWidth="2" />
+      <path d={CURVE_PATH} stroke="rgba(255,255,255,0.08)" strokeWidth="2" />
 
       {/* scroll-drawn progress */}
       <motion.path
@@ -116,7 +116,7 @@ function StepBadge({ icon: Icon, active }: { icon: LucideIcon; active: boolean }
       whileHover={{ rotate: 10 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
       className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl transition-colors duration-500 ${
-        active ? "bg-gradient-to-br from-ruby to-ruby-light" : "bg-gradient-to-br from-nv-700 to-nv-600"
+        active ? "bg-gradient-to-br from-ruby to-ruby-light" : "bg-white/10 border border-white/10"
       }`}
     >
       <Icon className="h-6 w-6 text-white" />
@@ -140,7 +140,7 @@ function GlassCard({
       animate={reduceMotion ? undefined : { y: [0, -8, 0, 8, 0] }}
       transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: index * 0.5 }}
       whileHover={{ y: -10, rotate: 2, scale: 1.04 }}
-      className="group relative rounded-[1.5rem] border border-border/80 bg-white p-6 shadow-soft transition-shadow duration-500 hover:border-ruby/30 hover:shadow-hover"
+      className="group relative rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-md transition-shadow duration-500 hover:border-ruby/30 hover:bg-white/10 backdrop-blur-md"
     >
       <span className="absolute left-6 top-0 h-1 w-10 rounded-full bg-gradient-to-r from-ruby to-ruby-light" />
       <div className="mb-5">
@@ -153,12 +153,12 @@ function GlassCard({
         Step {step.number}
       </span>
       <h3
-        className="mb-2 text-lg font-bold text-heading"
+        className="mb-2 text-lg font-bold text-white"
         style={{ fontFamily: "var(--font-poppins)" }}
       >
         {step.title}
       </h3>
-      <p className="text-sm leading-relaxed text-paragraph">{step.description}</p>
+      <p className="text-sm leading-relaxed text-slate-300 font-medium">{step.description}</p>
     </motion.div>
   );
 }
@@ -213,8 +213,8 @@ function VerticalStep({
       <motion.div
         animate={{ scale: active ? 1.02 : 1 }}
         transition={{ duration: 0.5 }}
-        className={`flex-1 rounded-[1.5rem] border bg-white p-6 shadow-soft transition-colors duration-500 sm:p-7 ${
-          active ? "border-ruby/30" : "border-border/80"
+        className={`flex-1 rounded-[1.5rem] border bg-white/5 backdrop-blur-md p-6 shadow-soft transition-colors duration-500 sm:p-7 ${
+          active ? "border-ruby/30" : "border-white/10"
         }`}
         style={{ transformOrigin: "left center" }}
       >
@@ -225,12 +225,12 @@ function VerticalStep({
           Step {step.number}
         </span>
         <h3
-          className="mb-2 text-lg font-bold text-heading"
+          className="mb-2 text-lg font-bold text-white"
           style={{ fontFamily: "var(--font-poppins)" }}
         >
           {step.title}
         </h3>
-        <p className="text-sm leading-relaxed text-paragraph">{step.description}</p>
+        <p className="text-sm leading-relaxed text-slate-300 font-medium">{step.description}</p>
       </motion.div>
     </div>
   );
@@ -267,51 +267,64 @@ export default function ProcessSteps() {
     <section
       ref={sectionRef}
       onMouseMove={handleMouseMove}
-      className="relative overflow-hidden bg-white py-24 lg:py-32"
+      className="relative w-full min-h-screen flex flex-col justify-center bg-section-dark-navy overflow-hidden py-24 px-[6vw] snap-section"
     >
-      {/* Decorative gradient blur — matches CreditPrograms */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      {/* Decorative gradient blur */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
         <motion.div
           style={{ x: blobX, y: blobY }}
-          className="absolute -top-32 -right-24 h-[28rem] w-[28rem] rounded-full bg-ruby/10 blur-3xl"
+          className="absolute -top-32 -right-24 h-[28rem] w-[28rem] rounded-full bg-ruby/8 blur-3xl"
         />
         <motion.div
           style={{ x: blobX, y: blobY }}
-          className="absolute -bottom-32 -left-24 h-[26rem] w-[26rem] rounded-full bg-nv-700/10 blur-3xl"
+          className="absolute -bottom-32 -left-24 h-[26rem] w-[26rem] rounded-full bg-primary/20 blur-3xl"
         />
-        <div className="animate-spin-slow pointer-events-none absolute right-[8%] top-[12%] h-16 w-16 rounded-full border border-dashed border-nv-900/10" />
-        <div className="animate-spin-slow-reverse pointer-events-none absolute bottom-[15%] left-[6%] h-24 w-24 rounded-full border border-nv-900/5" />
+        <div className="animate-spin-slow pointer-events-none absolute right-[8%] top-[12%] h-16 w-16 rounded-full border border-dashed border-white/10" />
+        <div className="animate-spin-slow-reverse pointer-events-none absolute bottom-[15%] left-[6%] h-24 w-24 rounded-full border border-white/5" />
+        
+        {/* Subtle dot grid */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: "radial-gradient(circle, #FFFFFF 1.5px, transparent 1.5px)",
+            backgroundSize: "32px 32px",
+          }}
+        />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-[1440px] w-full mx-auto z-10 flex flex-col gap-10">
+        
+        {/* Header */}
         <motion.div
           variants={staggerContainer(0.15)}
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="mb-20 text-center"
+          className="text-center flex flex-col items-center"
         >
           <motion.span
             variants={fadeUp}
-            className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/10 bg-primary/5 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-soft"
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4.5 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-350 shadow-soft"
           >
             How It Works
           </motion.span>
+          
           <motion.h2
             variants={fadeUp}
-            className="text-3xl font-extrabold leading-tight sm:text-4xl lg:text-[40px]"
+            className="text-3xl sm:text-4xl font-extrabold leading-tight text-white"
             style={{ fontFamily: "var(--font-poppins)" }}
           >
-            <span className="text-heading">Know About </span>
-            <span className="text-ruby">Our Process</span>
+            Know About <span className="text-ruby">Our Process</span>
           </motion.h2>
+
           <motion.div
             variants={fadeUp}
             className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-ruby to-ruby-light"
           />
+
           <motion.p
             variants={fadeUp}
-            className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-paragraph sm:text-base"
+            className="mx-auto mt-5 max-w-lg text-sm sm:text-base leading-relaxed text-slate-300 font-medium"
           >
             A simple, guided path from application to your reserved seat —
             every step tracked and supported by our team.
@@ -319,7 +332,7 @@ export default function ProcessSteps() {
         </motion.div>
 
         {/* Desktop — horizontal curved timeline */}
-        <div ref={containerRef} className="relative hidden lg:block">
+        <div ref={containerRef} className="relative hidden lg:block my-4">
           <TimelineCurve progress={drawProgress} />
           <motion.div
             variants={staggerContainer(0.2)}
@@ -336,8 +349,8 @@ export default function ProcessSteps() {
         </div>
 
         {/* Tablet / mobile — vertical timeline with diagonal stagger */}
-        <div className="relative lg:hidden">
-          <div className="absolute left-7 top-2 bottom-2 w-0.5 bg-nv-900/10" />
+        <div className="relative lg:hidden my-4 max-w-lg mx-auto w-full">
+          <div className="absolute left-7 top-2 bottom-2 w-0.5 bg-white/10" />
           <motion.div
             style={{ height: mobileLineHeight }}
             className="absolute left-7 top-2 w-0.5 bg-gradient-to-b from-ruby to-ruby-light shadow-[0_0_12px_rgba(229,57,53,0.6)]"
@@ -353,16 +366,17 @@ export default function ProcessSteps() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={viewportOnce}
           transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
-          className="mt-20 flex flex-col items-center gap-6 text-center lg:mt-28"
+          className="flex flex-col items-center gap-6 text-center"
         >
           <h3
-            className="text-2xl font-bold text-heading sm:text-3xl"
+            className="text-xl sm:text-2xl font-bold text-white"
             style={{ fontFamily: "var(--font-poppins)" }}
           >
             Ready to Begin Your Learning Journey?
           </h3>
           <RippleButton />
         </motion.div>
+
       </div>
     </section>
   );

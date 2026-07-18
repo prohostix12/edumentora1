@@ -54,7 +54,7 @@ export default function MissionVision() {
   ];
 
   return (
-    <section className="relative overflow-hidden bg-white py-24 lg:py-32">
+    <section className="relative overflow-hidden bg-white py-12 md:py-20 lg:py-24">
       {/* Layered background — matches AboutIntro light theme */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         {/* Red glow — top right */}

@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function BTechInstitute() {
   return (
-    <section className="relative py-24 lg:py-32 bg-white overflow-hidden">
+    <section className="relative py-12 md:py-20 lg:py-24 bg-white overflow-hidden">
       {/* Decorative background */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Red glow — top right */}

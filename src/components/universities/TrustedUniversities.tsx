@@ -83,7 +83,7 @@ function MarqueeCard({ uni }: { uni: University }) {
 
 export default function TrustedUniversities() {
   return (
-    <section className="relative overflow-hidden bg-white py-24 lg:py-32">
+    <section className="relative overflow-hidden bg-white py-12 md:py-20 lg:py-24">
       {/* Moving grid background */}
       <div
         aria-hidden="true"

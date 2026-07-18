@@ -1,37 +1,36 @@
 import Hero from "@/components/hero/Hero";
+import HeroStats from "@/components/hero/HeroStats";
 import AboutIntro from "@/components/about/AboutIntro";
-import ReadyToGrow from "@/components/common/ReadyToGrow";
-import MissionVision from "@/components/about/MissionVision";
-import TrustedUniversities from "@/components/universities/TrustedUniversities";
 import Achievements from "@/components/common/Achievements";
-import ProcessSteps from "@/components/common/ProcessSteps";
-import CreditPrograms from "@/components/programs/CreditPrograms";
-import BTechInstitute from "@/components/about/BTechInstitute";
-import WhyRightChoice from "@/components/common/WhyRightChoice";
 import UniversityGrid from "@/components/universities/UniversityGrid";
+import CreditPrograms from "@/components/programs/CreditPrograms";
+import ProcessSteps from "@/components/common/ProcessSteps";
 import TestimonialSlider from "@/components/testimonials/TestimonialSlider";
-import FAQ from "@/components/faq/FAQ";
-import ContactSection from "@/components/contact/ContactSection";
-import CTA from "@/components/common/CTA";
 
 export default function HomePage() {
   return (
-    <main>
+    <main className="w-full relative bg-white">
+      {/* Chapter 1: Hero Segment (White) */}
       <Hero />
+      <HeroStats />
+
+      {/* Chapter 2: About Edumentora, B.Tech and Mission/Vision (Light Navy) */}
       <AboutIntro />
-      <ReadyToGrow />
-      <MissionVision />
-      <TrustedUniversities />
+
+      {/* Chapter 3: Achievements & Student Pain Points (White) */}
       <Achievements />
-      <ProcessSteps />
-      <CreditPrograms />
-      <BTechInstitute />
-      <WhyRightChoice />
+
+      {/* Chapter 4: Universities Carousel & Partner Marquee (Light Red) */}
       <UniversityGrid />
+
+      {/* Chapter 5: Credit Programs Timeline & Why Right Choice (White) */}
+      <CreditPrograms />
+
+      {/* Chapter 6: How It Works Journey (Dark Navy) */}
+      <ProcessSteps />
+
+      {/* Chapter 7: Student Reviews, Free Call Inquiry Form & Offices (White) */}
       <TestimonialSlider />
-      <FAQ />
-      <CTA />
-      <ContactSection />
     </main>
   );
 }

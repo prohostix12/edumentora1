@@ -1,5 +1,6 @@
 import BTechContent from "@/components/btech/BTechContent";
 import CTA from "@/components/common/CTA";
+import FAQ from "@/components/faq/FAQ";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export default function BTechCreditTransferPage() {
   return (
     <main>
       <BTechContent />
+      <FAQ />
       <CTA />
     </main>
   );

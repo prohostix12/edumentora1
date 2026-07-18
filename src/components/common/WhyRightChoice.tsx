@@ -208,7 +208,7 @@ function FeatureCard({
         scale: 1.02,
         transition: { duration: 0.3, ease: "easeOut" },
       }}
-      className="group relative flex flex-col overflow-hidden rounded-3xl border border-[#E1E7F5] bg-white/80 backdrop-blur-sm p-7 cursor-default"
+      className="group relative flex flex-col overflow-hidden rounded-3xl border border-[#E1E7F5] bg-white/80 backdrop-blur-sm p-7 cursor-default w-full sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] max-w-sm sm:max-w-none"
       style={{
         boxShadow: "0 4px 30px rgba(16,45,140,0.06)",
       }}
@@ -290,7 +290,7 @@ export default function WhyChooseUs() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden py-24 lg:py-36"
+      className="relative overflow-hidden py-12 md:py-20 lg:py-24"
       aria-labelledby="why-choose-heading"
     >
       {/* ── Background ──────────────────────────────────────────── */}
@@ -427,7 +427,7 @@ export default function WhyChooseUs() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          className="flex flex-wrap justify-center gap-5"
         >
           {reasons.map((reason, index) => (
             <FeatureCard key={reason.title} reason={reason} index={index} />

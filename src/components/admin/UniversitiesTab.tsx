@@ -9,6 +9,7 @@ interface UniversityItem {
   logo: string;
   website: string;
   description?: string;
+  imageUrl?: string;
 }
 
 export default function UniversitiesTab() {
@@ -24,6 +25,7 @@ export default function UniversitiesTab() {
     logo: '',
     website: '',
     description: '',
+    imageUrl: '',
   });
 
   const fetchItems = async () => {
@@ -52,6 +54,7 @@ export default function UniversitiesTab() {
       logo: '',
       website: '',
       description: '',
+      imageUrl: '',
     });
     setModalOpen(true);
   };
@@ -63,6 +66,7 @@ export default function UniversitiesTab() {
       logo: item.logo,
       website: item.website,
       description: item.description || '',
+      imageUrl: item.imageUrl || '',
     });
     setModalOpen(true);
   };
@@ -145,6 +149,19 @@ export default function UniversitiesTab() {
               key={item._id}
               className="bg-white border border-border/85 rounded-[2.5rem] shadow-soft overflow-hidden flex flex-col justify-between group hover:border-primary/20 transition-all duration-500"
             >
+              {item.imageUrl && (
+                <div className="h-28 w-full overflow-hidden bg-slate-100">
+                  <img
+                    src={item.imageUrl}
+                    alt=""
+                    aria-hidden="true"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              )}
               <div className="p-6 flex items-center gap-4">
                 <div className="relative h-16 w-16 shrink-0 border border-border/80 rounded-2xl overflow-hidden bg-slate-50 flex items-center justify-center">
                   {item.logo ? (
@@ -251,6 +268,19 @@ export default function UniversitiesTab() {
                   placeholder="e.g. https://www.glocaluniversity.edu.in"
                   className="w-full rounded-xl border border-border bg-slate-50/50 px-4 py-2.5 text-sm text-heading placeholder:text-slate-400 focus:bg-white focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium"
                 />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-heading mb-1.5 uppercase tracking-wide">Image URL</label>
+                <input
+                  type="url"
+                  name="imageUrl"
+                  value={formData.imageUrl}
+                  onChange={handleChange}
+                  placeholder="https://example.com/university-image.jpg"
+                  className="w-full rounded-xl border border-border bg-slate-50/50 px-4 py-2.5 text-sm text-heading placeholder:text-slate-400 focus:bg-white focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium"
+                />
+                <p className="mt-1 text-[11px] text-paragraph/60 font-medium">Used as the background image for this university&apos;s card on the site.</p>
               </div>
 
               <div>

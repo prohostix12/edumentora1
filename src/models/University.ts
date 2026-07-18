@@ -5,6 +5,7 @@ const UniversitySchema = new Schema({
   logo: { type: String, required: true }, // Logo filename or URL
   website: { type: String, default: "" },
   description: { type: String, default: "" },
+  imageUrl: { type: String, default: "" }, // Background image URL for the university card
 });
 
 export const University = models.University || model("University", UniversitySchema);

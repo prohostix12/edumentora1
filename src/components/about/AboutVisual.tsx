@@ -20,10 +20,10 @@ const stats = [
 ];
 
 const cardPositions = [
-  "-top-5 -left-4 sm:-left-8 lg:-left-12",
-  "top-10 -right-2 sm:-right-6 lg:-right-12",
-  "bottom-28 -left-3 sm:-left-9 lg:-left-14",
-  "-bottom-6 right-2 sm:right-0 lg:-right-8",
+  "-top-3 -left-1 sm:-left-4 lg:-left-6",
+  "top-10 -right-1 sm:-right-3 lg:-right-6",
+  "bottom-24 -left-1 sm:-left-4 lg:-left-6",
+  "-bottom-4 right-1 sm:right-0 lg:-right-4",
 ];
 
 function useTilt(mx: MotionValue<number>, my: MotionValue<number>, distance: number) {
@@ -75,7 +75,7 @@ export default function AboutVisual() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative mx-auto w-full max-w-[560px] py-10 lg:max-w-none lg:py-16 [perspective:1400px]"
+      className="relative mx-auto w-full max-w-[420px] lg:max-w-[480px] py-6 lg:py-10 [perspective:1400px]"
     >
       {/* Dot grid background */}
       <div
@@ -136,7 +136,7 @@ export default function AboutVisual() {
           whileHover={{ scale: 1.03, z: 30 }}
           transition={{ type: "spring", stiffness: 220, damping: 18 }}
           style={{ transformStyle: "preserve-3d" }}
-          className="relative z-10 mx-auto w-[76%] sm:w-[70%] lg:w-[72%]"
+          className="relative z-10 mx-auto w-[64%] sm:w-[60%] lg:w-[58%]"
         >
           <div className="relative aspect-[3/4] overflow-hidden rounded-[2.5rem] border-4 border-white shadow-hover">
             <Image
@@ -157,7 +157,7 @@ export default function AboutVisual() {
           whileInView="visible"
           viewport={{ once: true }}
           style={{ x: secondaryParallaxA.x, y: secondaryParallaxA.y }}
-          className="absolute right-0 top-[6%] z-20 w-[38%] sm:w-[34%]"
+          className="absolute right-[2%] top-[6%] z-20 w-[32%] sm:w-[28%]"
         >
           <motion.div
             animate={{ y: [0, -14, 0] }}
@@ -184,7 +184,7 @@ export default function AboutVisual() {
           viewport={{ once: true }}
           transition={{ delay: 0.15 }}
           style={{ x: secondaryParallaxB.x, y: secondaryParallaxB.y }}
-          className="absolute bottom-[4%] left-[2%] z-20 w-[30%] sm:w-[27%]"
+          className="absolute bottom-[8%] left-[4%] z-20 w-[26%] sm:w-[22%]"
         >
           <motion.div
             animate={{ y: [0, 12, 0] }}

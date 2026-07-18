@@ -127,9 +127,9 @@ export default function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`fixed left-0 right-0 z-50 transition-all duration-500 top-4 mx-auto max-w-6xl w-[92%] rounded-full border border-border/80 bg-white/80 backdrop-blur-xl shadow-card`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 w-full border-b border-border/80 bg-white/80 backdrop-blur-xl shadow-sm`}
       >
-        <div className={`mx-auto px-6 lg:px-8 transition-all duration-500 ${scrolled ? "h-16" : "h-16"}`}>
+        <div className={`mx-auto max-w-7xl px-6 lg:px-8 transition-all duration-500 ${scrolled ? "h-18" : "h-22"}`}>
           <div className="flex h-full items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5 group">
@@ -222,7 +222,7 @@ export default function Navbar() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: -10 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-24 left-4 right-4 rounded-[2rem] bg-white border border-border/80 shadow-hover p-6 max-h-[75vh] overflow-y-auto"
+              className="absolute top-20 left-4 right-4 rounded-[2rem] bg-white border border-border/80 shadow-hover p-6 max-h-[75vh] overflow-y-auto"
             >
               <nav className="flex flex-col gap-1.5">
                 {navLinks.map((link) =>
