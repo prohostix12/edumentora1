@@ -34,13 +34,32 @@ body {
 }
 
 html {
-  scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
+  scroll-behavior: auto;
+}
+
+/* Lenis smooth scrolling config */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
 .snap-section {
-  scroll-snap-align: start;
-  scroll-snap-stop: normal;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
